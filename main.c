@@ -28,7 +28,7 @@
 
      	//El archivo de salida
      	//w creara un archivo para escribe en caso de que no exista
-     	FILE *escribe = fopen(argv[argc-1], "w"); 
+     	//FILE *escribe = fopen(argv[argc-1], "w"); 
  
      }
      return 0; 
@@ -48,6 +48,7 @@
  	int indice =0;
  	Elemento* doit = *lista;
  	int found = 0;
+
  	while(doit!=NULL){
  		if(strcmp(doit->palabra->word, palabra->word) ==0 ){
  			doit->palabra->apariciones +=1;
@@ -56,7 +57,7 @@
  		} 
  		doit= doit->siguiente;
  	}
- 
+ 	
  	if(!found){
  		//Creamos un nuevo elemento
  		Elemento *recien = malloc(sizeof(Elemento));
@@ -84,7 +85,7 @@
  /*Crea una lista vacía*/
  Lista crea_lista(){
  	//Se aparta el espacio en el heap para la lista
- 	Lista lista = calloc(1 ,sizeof(Lista));
+ 	Lista lista = calloc(1,sizeof(Lista));
  	return lista;
  }
  
@@ -103,14 +104,14 @@
  	}
  }
  
- /*Va a llenar una lista con estructuras palabra*/
- void rellena(Lista palabras, FILE *archivo){
-     // Se lee del archivo que este en indice
-     char buffer[300];
-     //Para obtener renglones
-     while(fgets(buffer, 300, archivo)) {
+/*Va a llenar una lista con estructuras palabra*/
+void rellena(Lista palabras, FILE *archivo){
+    // Se lee del archivo que este en indice
+    char buffer[301];
+    //Para obtener renglones
+    while(fgets(buffer,300,archivo)){
      	//Primera palabra del archivo
-     	char *token_actual = strtok(buffer, " ,.-");
+     	char *token_actual = strtok(buffer, " ,.-\n\r");
      	//Mientras haya palabras en el archivo
  		while(token_actual != NULL) {
  			//Creamos un valor palabra para añadir a la lista
@@ -118,16 +119,20 @@
  			//Aumentamos las apariciones de la palabra
      		segmento -> apariciones = 1;
      		//Le damos como id la palabra que estaba en el archivo
-     		segmento -> word = token_actual;
-     		//Finalmente la insertamos, el inserta ya revisa si la palabra estaba en la lista
+     		//Asignamos memoria para más palabras
+     		char*  copia = malloc(strlen(token_actual)+1);
+     		strcpy(copia,token_actual);
+     		segmento -> word = copia;
+			
  			inserta_elemento(palabras, segmento);
+
  			//Nos deshacemos de la pabra y pasamos a la siguiente
-        	token_actual = strtok (NULL, " ,.-");
+        	token_actual = strtok (NULL, " ,.-\n\r");
      	}
-     	printf("..................TU LISTA.....................\n");
+     	printf("\n..................TU LISTA.....................\n");
      	imprime_lista(palabras);
-     }
- }
+    }
+}
 
 /*Va a iterar sobre la lista de cada archivo buscando la palabra que tenga más apariciones*/
 Palabra* buscaElRepetido(Lista lista){
@@ -150,6 +155,6 @@ Palabra* buscaElRepetido(Lista lista){
         }
         cabeza = cabeza -> siguiente;
     }
-    printf("LA PALABRA MAS REPETDA ES: %s, CON %d\n", palabra, total);
+    printf("LA PALABRA MAS REPETIDA ES: %s, CON %d\n", palabra, total);
     return recopila;
 }
