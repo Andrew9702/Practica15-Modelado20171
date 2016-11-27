@@ -2,10 +2,9 @@
 #define MAIN_H
 /* ------ Se hacen todos los includes necesarios ------ */
 #include <stdio.h>
-#include <string.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 /* ------ Definición de tus estructuras ------ */
 
@@ -14,7 +13,6 @@ struct palabra{
 	int apariciones;
 	char *word;
 };
-
 
 /*Definiendo alias para la palabra*/
 typedef struct palabra Palabra;
@@ -31,10 +29,10 @@ typedef Elemento** Lista;
 /* ------ Definición de tus funciones ------ */
 Lista crea_lista();
 void inserta_elemento(Lista lista, Palabra *palabra);
-int cmp_words(const void *a, const void *b);
 void imprime_lista(Lista lista);
 size_t longitud(Lista lista);
 void rellena(Lista lista, FILE *archivo);
+Palabra * buscaElRepetido(Lista lista);
 
 /*Imprime las instrucciones de uso del programa*/
 void imprime_instrucciones();
