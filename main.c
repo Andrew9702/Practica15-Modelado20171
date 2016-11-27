@@ -3,8 +3,6 @@
 
 int main(int argc, char const *argv[])
 {
-	//Creamos una lista en donde guardaremos las palabras del archivo
-	Lista palabras = crea_lista();
 
     // Verifica si hay al menos de 3 parametros
     // sino entonces se imprimen las instrucciones
@@ -18,10 +16,12 @@ int main(int argc, char const *argv[])
     	FILE *archivo;
     	//Abrimos todos los archivos que se le pasan como parametros
     	for(indice;argv[indice]!=NULL;indice++){
+    		//Creamos una lista en donde guardaremos las palabras del archivo
+			Lista palabras = crea_lista();
     		archivo = fopen(argv[indice], "a+");
     		printf("Abriendo el archivo %s\n", argv[indice]);
     		rellena(palabras, archivo);
-
+    		//buscaElRepetido(palabras);
     	}
 
     }
@@ -31,7 +31,7 @@ int main(int argc, char const *argv[])
 /* ------ Aquí va la implementación de tus funciones ------ */
 void imprime_instrucciones(){
 	//La funcion puts solo imprime el output en la consola
- 	puts("\n   Error: El formato de archivo es incorrecto\n   Uso: Nombre del ejecutable <archivo> [<archivo> [<archivo> ...]] <archivo>");
+ 	puts("   Error: El formato de archivo es incorrecto\n\n   Uso: Nombre del ejecutable <archivo> [<archivo> [<archivo> ...]] <archivo>");
     return;
 }
 
@@ -105,30 +105,27 @@ void rellena(Lista palabras, FILE *archivo){
 		while(token_actual != NULL) {
 			Palabra *segmento = malloc(sizeof(Palabra));
     		segmento -> apariciones = 1;
-    		segmento -> word = token_actual;
+    		//segmento -> word = strndup(token_actual,100);
 			inserta_elemento(palabras, segmento);
        		token_actual = strtok (NULL, " ,.-");
     	}
-    	//imprime_lista(palabras);
     	printf("..................TU LISTA.....................\n");
     	imprime_lista(palabras);
     }
 }
-/**
-void obtiene(Lista palabras, FILE *archivo){
-    // Se lee del archivo que este en indice
-    char buffer[100];
-    Palabra *segmento;
-    while(fgets(buffer, 100, archivo)) {
-    	char *token_actual = strtok(buffer, " ,.-");
-			while(token_actual != NULL) {
-        		printf ("PALABRA: %s\n",token_actual);
-				//printf("valor para segmento en word! %s\n", segmento->word);
-				inserta_elemento(palabras, segmento);
-        		token_actual = strtok (NULL, " ,.-");
-    		}
-    		//imprime_lista(palabras);
-    		printf("..................Empezar de NUEVO.....................\n");
-    }
+
+Palabra* buscaElRepetido(Lista lista){
+	int indice = 0;
+	Elemento* cabeza = *lista;
+	int total = 0;
+	Palabra *recopila;
+	while(cabeza != NULL){
+		if(cabeza -> palabra -> apariciones >= total){
+			total = cabeza -> palabra -> apariciones;
+			recopila = cabeza -> palabra; 
+		}
+		cabeza = cabeza -> siguiente;
+	}
+	printf("LA MAS REPETIDA ES:....%s\n", recopila -> word);
+	return recopila;
 }
-**/
