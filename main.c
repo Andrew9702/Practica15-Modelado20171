@@ -6,29 +6,54 @@
      // Verifica si hay al menos de 3 parametros
      // sino entonces se imprimen las instrucciones
      // y se para la ejecución del programa
-     if (argc < 2){
+     if (argc < 3){
          imprime_instrucciones();
          return 0;
  
      } else {
 
      	int indice = 1;
-
+     	printf("\n***************************************************************************\n");
+     	printf("\nNombre del archivo     Palabra mas repetida     Numero de repeticiones\n\n");
      	//Abrimos todos los archivos que se le pasan como parametros
      	FILE *archivo;
-     	for(indice;argv[indice]!=NULL;indice++){
+     	for(indice;indice<argc-1;indice++){
      	 	//Creamos una lista en donde guardaremos las palabras del archivo
     		Lista palabras = crea_lista();
      		archivo = fopen(argv[indice], "a+");
-     		printf("Abriendo el archivo %s\n", argv[indice]);
      		rellena(palabras, archivo);
-     		buscaElRepetido(palabras);
- 
+     		Palabra *repetido = buscaElRepetido(palabras);
+     		printf("%s\n", argv[indice]);
+     		printf("                       %s", repetido->word);
+     		printf("                       %d\n", repetido-> apariciones);
+
      	}
 
-     	//El archivo de salida
-     	//w creara un archivo para escribe en caso de que no exista
-     	//FILE *escribe = fopen(argv[argc-1], "w"); 
+     	printf("\n*************************************************************************\n");
+     	printf("\nSe guardo el resultado en el archivo %s\n", argv[argc-1]); 
+
+     	FILE *resultado = fopen(argv[argc-1], "w");
+
+     	fprintf(resultado, "\n***************************************************************************\n");
+     	fprintf(resultado, "\nNombre del archivo     Palabra mas repetida     Numero de repeticiones\n\n");
+
+     	int nuevoInd = 1;
+
+     	//Ahora iteramos otra vez para escribir todo en un archivo
+     	for(nuevoInd;nuevoInd<argc-1;nuevoInd++){
+     	 	//Creamos una lista en donde guardaremos las palabras del archivo
+    		Lista palabras = crea_lista();
+     		archivo = fopen(argv[nuevoInd], "r");
+     		rellena(palabras, archivo);
+     		Palabra *repetido = buscaElRepetido(palabras);
+     		fprintf(resultado, " %s\n", argv[nuevoInd]);
+     		fprintf(resultado, "                       %s", repetido->word);
+     		fprintf(resultado, "                       %d\n", repetido-> apariciones);
+     	}
+
+     	fprintf(resultado, "\n***************************************************************************\n");
+
+    	fclose(resultado);
  
      }
      return 0; 
@@ -129,8 +154,6 @@ void rellena(Lista palabras, FILE *archivo){
  			//Nos deshacemos de la pabra y pasamos a la siguiente
         	token_actual = strtok (NULL, " ,.-\n\r");
      	}
-     	printf("\n..................TU LISTA.....................\n");
-     	imprime_lista(palabras);
     }
 }
 
@@ -155,6 +178,6 @@ Palabra* buscaElRepetido(Lista lista){
         }
         cabeza = cabeza -> siguiente;
     }
-    printf("LA PALABRA MAS REPETIDA ES: %s, CON %d\n", palabra, total);
+    //printf("LA PALABRA MAS REPETIDA ES: %s, CON %d\n", palabra, total);
     return recopila;
 }
